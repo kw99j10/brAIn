@@ -3,14 +3,11 @@ package com.ssafy.brAIn.vote.entity;
 import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import com.ssafy.brAIn.member.entity.Member;
 import com.ssafy.brAIn.roundpostit.entity.RoundPostIt;
-import com.ssafy.brAIn.vote.dto.VoteRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -29,10 +26,6 @@ public class Vote {
     @JoinColumn(name = "postit_id", referencedColumnName = "id")
     private RoundPostIt roundPostIt;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id", referencedColumnName = "id")
-//    private Member member;
-
     @Column(name = "score")
     private int score;
 
@@ -47,7 +40,6 @@ public class Vote {
 
         this.conferenceRoom = conferenceRoom;
         this.roundPostIt = roundPostIt;
-//        this.member = member;
     }
 
     // 최종 투표 갱신

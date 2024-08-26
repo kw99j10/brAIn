@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-// ! 스프링 시큐리티에서 사용자 정보를 가져오는 인터페이스 ! -> 일반 Service랑 별도
 public class MemberDetailService implements UserDetailsService {
 
     private final MemberRepository memberRepository;

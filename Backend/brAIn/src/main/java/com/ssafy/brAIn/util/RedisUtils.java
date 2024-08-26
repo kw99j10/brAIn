@@ -211,12 +211,8 @@ public class RedisUtils {
             ZSetOperations.TypedTuple<Object> lastElement = result.iterator().next();
             Object value = lastElement.getValue();
             Double score = lastElement.getScore();
-
-//            System.out.println("Value: " + value);
-//            System.out.println("Score: " + score);
             return score;
         } else {
-            //System.out.println("Sorted Set is empty or key does not exist.");
             throw new RuntimeException("Sorted Set is empty or key does not exist.");
         }
     }
@@ -240,11 +236,8 @@ public class RedisUtils {
             Object value = firstElement.getValue();
             Double score = firstElement.getScore();
 
-//        System.out.println("Value: " + value);
-//        System.out.println("Score: " + score);
             return score;
         } else {
-            // System.out.println("Sorted Set is empty or key does not exist.");
             throw new RuntimeException("Sorted Set is empty or key does not exist.");
         }
     }

@@ -2,7 +2,6 @@ package com.ssafy.brAIn.stomp.controller;
 
 import com.ssafy.brAIn.ai.service.AIService;
 import com.ssafy.brAIn.auth.jwt.JWTUtilForRoom;
-import com.ssafy.brAIn.auth.jwt.JwtUtil;
 import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import com.ssafy.brAIn.conferenceroom.entity.Step;
 import com.ssafy.brAIn.conferenceroom.service.ConferenceRoomService;
@@ -14,19 +13,12 @@ import com.ssafy.brAIn.stomp.response.*;
 import com.ssafy.brAIn.stomp.service.MessageService;
 import com.ssafy.brAIn.util.RedisUtils;
 import com.ssafy.brAIn.vote.dto.VoteResponse;
-import com.sun.jdi.request.StepRequest;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -77,7 +69,6 @@ public class MessageController {
 
 
         messageService.sendPost(Integer.parseInt(roomId),groupPost,nickname);
-        //messageService.updateUserState(Integer.parseInt(roomId),nickname,UserState.SUBMIT);
         ResponseGroupPost responseGroupPost=makeResponseGroupPost(groupPost,Integer.parseInt(roomId),nickname);
         rabbitTemplate.convertAndSend("amq.topic","room." + roomId, responseGroupPost);
 
@@ -87,7 +78,6 @@ public class MessageController {
 
         //만약 다음 사람이 ai라면 추가적인 로직 필요
         String nextUser=messageService.NextOrder(Integer.parseInt(roomId),nickname);
-        //messageService.updateCurOrder(Integer.parseInt(roomId),nextUser);
 
         boolean curUserIsLast=messageService.isLastOrder(Integer.parseInt(roomId),nickname);
 
@@ -105,7 +95,6 @@ public class MessageController {
 
         messageService.sendPost(Integer.parseInt(roomId),aiGroupPost,nextUser);
 
-        //messageService.updateUserState(Integer.parseInt(roomId),nickname,UserState.SUBMIT);
         ResponseGroupPost aiResponseGroupPost=makeResponseGroupPost(aiGroupPost,Integer.parseInt(roomId),nextUser);
         rabbitTemplate.convertAndSend("amq.topic","room." + roomId, aiResponseGroupPost);
 
@@ -126,57 +115,6 @@ public class MessageController {
         }
         return new ResponseGroupPost(MessageType.SUBMIT_POST_IT,nickname,nextUser,groupPost.getRound(), groupPost.getRound(), groupPost.getContent());
     }
-
-//    //삭제예정
-//    //다음 라운드로 이동하라는 메시지(어차피 제출할 때, 다음 라운드까지 제시해줘서 필요없는듯)
-//    @MessageMapping("next.round.{roomId}")
-//    public void nextRound(@Payload int curRound, @DestinationVariable String roomId) {
-//
-//        Round nextRound=new Round(MessageType.NEXT_ROUND,curRound+1);
-//        rabbitTemplate.convertAndSend("amq.topic","room." + roomId, nextRound);
-//    }
-
-    //(테스트 완)
-//    //대기 방 입장했을 때, 렌더링 시 호출하면 될듯(useEffect 내부에서 publish)
-//    @MessageMapping("enter.waiting.{roomId}")
-//    public void enterWaitingRoom(@DestinationVariable String roomId, StompHeaderAccessor accessor){
-//        String token = accessor.getFirstNativeHeader("Authorization");
-//        String email=JwtUtil.getEmail(token);
-//        //messageService.enterWaitingRoom(Integer.parseInt(roomId),email);
-//        rabbitTemplate.convertAndSend("amq.topic","room."+roomId,new WaitingRoomEnterExit(MessageType.ENTER_WAITING_ROOM));
-//
-//    }
-
-    //회의 중간에 입장 시,
-//    @MessageMapping("enter.conferences.{roomId}")
-//    public void exhalation(@DestinationVariable String roomId, StompHeaderAccessor accessor)  {
-//        String token=accessor.getFirstNativeHeader("Authorization");
-////        String nickname=token.getNickname();
-//        String nickname="user"+(int)(Math.random()*100);
-//        rabbitTemplate.convertAndSend("amq.topic","room."+roomId,new ConferencesEnterExit("enter conferences",nickname));
-//    }
-
-//    //대기 방 퇴장(테스트 완)
-//    @MessageMapping("exit.waiting.{roomId}")
-//    public void exitWaitingRoom(@DestinationVariable String roomId, StompHeaderAccessor accessor)  {
-//        String token=accessor.getFirstNativeHeader("Authorization");
-//        String email=jwtUtilForRoom.getUsername(token);
-//        //messageService.exitWaitingRoom(Integer.parseInt(roomId),nickname);
-//        messageService.historyUpdate(Integer.parseInt(roomId),email);
-//
-//        rabbitTemplate.convertAndSend("amq.topic","room."+roomId,new WaitingRoomEnterExit(MessageType.EXIT_WAITING_ROOM));
-//
-//    }
-
-//    // 회의 중 퇴장(테스트 완)
-//    @MessageMapping("exit.conferences.{roomId}")
-//    public void exitConference(@DestinationVariable String roomId, StompHeaderAccessor accessor)  {
-//        String token=accessor.getFirstNativeHeader("Authorization");
-//        String nickname=jwtUtilForRoom.getNickname(token);
-//        String email=jwtUtilForRoom.getUsername(token);
-//        messageService.historyUpdate(Integer.parseInt(roomId),email);
-//        rabbitTemplate.convertAndSend("amq.topic","room."+roomId,new ConferencesEnterExit(MessageType.EXIT_CONFERENCES,nickname));
-//    }
 
     //대기방에서 회의방 시작하기(테스트 완)(아직 secured는 테스트 못함)
 
@@ -218,7 +156,6 @@ public class MessageController {
     //회의 다음단계 시작(테스트 완)(Secured미완)
 
     @MessageMapping("next.step.{roomId}")
-    //@PreAuthorize("hasAuthority('ROLE_CHIEF')")
     public void nextStep(@Payload RequestStep requestStep, @DestinationVariable String roomId,StompHeaderAccessor accessor) {
 
         String authorization = accessor.getFirstNativeHeader("Authorization");
@@ -277,9 +214,6 @@ public class MessageController {
         //다음 사람이 ai가 아니라면 종료
         if(!messageService.isAi(Integer.parseInt(roomId),nextMember))return;
         String aiPostIt=messageService.receiveAImessage(Integer.parseInt(roomId));
-        //System.out.println("aiPostIt:"+aiPostIt);
-
-
 
         boolean curUserIsLast=messageService.isLastOrder(Integer.parseInt(roomId),nickname);
 
@@ -395,7 +329,6 @@ public class MessageController {
 
         messageService.sendPost(Integer.parseInt(roomId),aiGroupPost,ai);
 
-        //messageService.updateUserState(Integer.parseInt(roomId),nickname,UserState.SUBMIT);
         ResponseGroupPost aiResponseGroupPost=makeResponseGroupPost(aiGroupPost,Integer.parseInt(roomId),ai);
         rabbitTemplate.convertAndSend("amq.topic","room." + roomId, aiResponseGroupPost);
     }

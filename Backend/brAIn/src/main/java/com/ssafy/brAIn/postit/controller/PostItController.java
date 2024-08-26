@@ -1,15 +1,9 @@
 package com.ssafy.brAIn.postit.controller;
 
-import com.ssafy.brAIn.auth.jwt.JWTUtilForRoom;
-import com.ssafy.brAIn.conferenceroom.dto.ConferenceRoomRequest;
-import com.ssafy.brAIn.conferenceroom.dto.ConferenceRoomResponse;
 import com.ssafy.brAIn.postit.entity.PostItKey;
 import com.ssafy.brAIn.postit.service.PostItService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;

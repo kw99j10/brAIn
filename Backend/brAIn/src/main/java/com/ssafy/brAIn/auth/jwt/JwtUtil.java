@@ -27,8 +27,6 @@ public class JwtUtil {
     private static final long accessTokenExpiration = 1209600000; // 10분 (1000 = 1초)
     private static final long refreshTokenExpiration = 1209600000; // 14일
 
-    // ( Authentication auth = 인증된 사용자 정보의 객체를 담고있음)
-    // accessToken 생성 메서드
     public static String createAccessToken(Authentication auth) {
         // 토큰에 포함될 사용자 정보
         String email;

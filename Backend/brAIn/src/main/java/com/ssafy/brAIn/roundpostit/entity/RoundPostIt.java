@@ -4,14 +4,12 @@ import com.ssafy.brAIn.vote.entity.Vote;
 import com.ssafy.brAIn.comment.entity.Comment;
 import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import com.ssafy.brAIn.member.entity.Member;
-import com.ssafy.brAIn.roundboard.entity.RoundBoard;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Entity

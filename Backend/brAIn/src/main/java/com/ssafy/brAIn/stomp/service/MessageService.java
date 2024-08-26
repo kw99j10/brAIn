@@ -7,34 +7,26 @@ import com.ssafy.brAIn.conferenceroom.repository.ConferenceRoomRepository;
 import com.ssafy.brAIn.conferenceroom.service.ConferenceRoomService;
 import com.ssafy.brAIn.history.entity.MemberHistory;
 import com.ssafy.brAIn.history.entity.MemberHistoryId;
-import com.ssafy.brAIn.history.model.Role;
 import com.ssafy.brAIn.history.model.Status;
 import com.ssafy.brAIn.history.repository.MemberHistoryRepository;
 import com.ssafy.brAIn.history.service.MemberHistoryService;
 import com.ssafy.brAIn.member.entity.Member;
 import com.ssafy.brAIn.member.repository.MemberRepository;
-import com.ssafy.brAIn.postit.entity.PostIt;
-import com.ssafy.brAIn.roundpostit.entity.RoundPostIt;
 import com.ssafy.brAIn.stomp.dto.MessageType;
 import com.ssafy.brAIn.stomp.dto.UserState;
 import com.ssafy.brAIn.stomp.request.RequestGroupPost;
 
 import com.ssafy.brAIn.util.RandomNicknameGenerator;
 
-import com.ssafy.brAIn.stomp.response.ResponseGroupPost;
 import com.ssafy.brAIn.stomp.response.ResponseMiddleVote;
 
 import com.ssafy.brAIn.util.RedisUtils;
-import com.ssafy.brAIn.vote.dto.VoteRequest;
 import com.ssafy.brAIn.vote.dto.VoteResponse;
-import com.ssafy.brAIn.vote.entity.Vote;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -47,7 +39,6 @@ public class MessageService {
     private final MemberRepository memberRepository;
     private final ConferenceRoomRepository conferenceRoomRepository;
     private final AIService aiService;
-    private final ConferenceRoomService conferenceRoomService;
 
     public MessageService(RedisUtils redisUtils,
                           MemberRepository memberRepository,
@@ -60,7 +51,6 @@ public class MessageService {
         this.conferenceRoomRepository=conferenceRoomRepository;
         this.memberHistoryService = memberHistoryService;
         this.aiService = aiService;
-        this.conferenceRoomService = conferenceRoomService;
     }
 
     public void sendPost(Integer roomId, RequestGroupPost groupPost,String nickname) {
@@ -74,12 +64,6 @@ public class MessageService {
         updateUserState(roomId,nickname,UserState.SUBMIT);
 
     }
-
-//    private void sendPostToAI(Integer roomId, RequestGroupPost groupPost) {
-//        String threadId=conferenceRoomService.findByRoomId(roomId+"").getThreadId();
-//        aiService.addPostIt(groupPost.getContent(),threadId);
-//
-//    }
 
 
     //현재 유저가 마지막 순서인지 확인하는 메서드(테스트 완)
@@ -147,9 +131,7 @@ public class MessageService {
 
     //멤버가 대기방에서 나갔을 때, 레디스에 저장(테스트 완)
     public void exitWaitingRoom(Integer roomId,String nickname) {
-
         redisUtils.setDataInSet(roomId+":out",nickname,7200L);
-        //redisUtils.removeValueFromSortedSet(roomId+"order",nickname);
     }
 
     //멤버가 회의 중  history 테이블 업데이트(테스트 완)
@@ -170,9 +152,6 @@ public class MessageService {
 
 
         //order에서는 삭제
-        //redisUtils.removeValueFromSortedSet(roomId+":order",memberHistory.getNickName());
-
-
     }
 
     //다음 단계로 이동 시, 회의 룸 업데이트 해야함.(테스트 완료)
@@ -315,7 +294,6 @@ public class MessageService {
     public void initUserState(Integer roomId) {
         String key=roomId + ":order";
         redisUtils.getSortedSet(key)
-//                .filter((user)->redisUtils.isKeyExists(roomId+":"+user))
                 .forEach((user)->redisUtils.save(roomId+":"+user,UserState.NONE.toString()));
 
 

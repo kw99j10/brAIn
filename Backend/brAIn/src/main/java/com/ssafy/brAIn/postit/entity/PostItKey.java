@@ -1,6 +1,5 @@
 package com.ssafy.brAIn.postit.entity;
 
-import com.ssafy.brAIn.stomp.dto.MessageType;
 import com.ssafy.brAIn.util.HashGenerator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,5 @@
 package com.ssafy.brAIn.stomp.config;
 
-import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -30,7 +29,6 @@ public class RabbitConfig {
         factory.setVirtualHost("/");
         factory.setUsername("guest");
         factory.setPassword("guest");
-        //factory.setConnectionTimeout(5000);
         return factory;
     }
 

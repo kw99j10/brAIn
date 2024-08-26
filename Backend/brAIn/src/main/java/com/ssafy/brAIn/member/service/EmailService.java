@@ -24,8 +24,6 @@ public class EmailService {
     private final Integer EXPIRATION_TIME_IN_MINUTES = 5; //제한시간 5분
     private final JavaMailSender mailSender;
 
-    @Qualifier("redisTemplate")
-    private final RedisTemplate<String, Object> redisTemplate;
     @Qualifier("redisTemplate1")
     private final RedisTemplate<String, Object> redisTemplate1;
 

@@ -1,6 +1,5 @@
 package com.ssafy.brAIn.conferenceroom.dto;
 
-import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

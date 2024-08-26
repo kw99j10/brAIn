@@ -1,13 +1,8 @@
 package com.ssafy.brAIn.vote.controller;
 
-import com.ssafy.brAIn.ai.service.AIService;
 import com.ssafy.brAIn.auth.jwt.JWTUtilForRoom;
-import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
-import com.ssafy.brAIn.conferenceroom.entity.Step;
-import com.ssafy.brAIn.conferenceroom.service.ConferenceRoomService;
 import com.ssafy.brAIn.member.entity.Member;
 import com.ssafy.brAIn.member.service.MemberService;
-import com.ssafy.brAIn.util.RedisUtils;
 import com.ssafy.brAIn.vote.dto.FinalVoteRequest;
 import com.ssafy.brAIn.vote.dto.VoteRequest;
 import com.ssafy.brAIn.vote.dto.VoteResponse;
@@ -20,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +27,6 @@ public class VoteController {
     private final VoteService voteService;
     private final JWTUtilForRoom jwtUtilForRoom;
     private final MemberService memberService;
-    private final RedisUtils redisUtils;
-    private final AIService aiService;
-    private final ConferenceRoomService conferenceRoomService;
 
     // 투표 결정(진행)
     @PostMapping
@@ -81,23 +72,12 @@ public class VoteController {
         for(VoteResponse voteResponse: results) {
             System.out.println(voteResponse);
         }
-        ConferenceRoom cr = conferenceRoomService.findByRoomId(roomId+"");
-        //주석
-        //주주석
         VoteResultRequest voteResultRequest = new VoteResultRequest(roomId, step);
         if(jwtUtilForRoom.getRole(token).equals("CHIEF")){
             voteService.saveTop9RoundResults(results, voteResultRequest, roomId);
         }
         return ResponseEntity.ok().body(results);
     }
-
-    // 투표 결과 db 저장
-//    @PostMapping("/saveResults")
-//    public ResponseEntity<String> saveVoteResults(@RequestBody VoteResultRequest voteResultRequest) {
-//        List<VoteResponse> results = voteService.getVoteResults(voteResultRequest.getConferenceId(), voteResultRequest.getStep());
-//        voteService.saveTop9RoundResults(results, voteResultRequest);
-//        return new ResponseEntity<>("Vote results saved successfully", HttpStatus.OK);
-//    }
 
     // Step 3
 

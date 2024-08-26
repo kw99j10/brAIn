@@ -1,10 +1,7 @@
 package com.ssafy.brAIn.vote.service;
 
-import com.ssafy.brAIn.ai.service.AIService;
 import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
-import com.ssafy.brAIn.conferenceroom.entity.Step;
 import com.ssafy.brAIn.conferenceroom.repository.ConferenceRoomRepository;
-import com.ssafy.brAIn.conferenceroom.service.ConferenceRoomService;
 import com.ssafy.brAIn.exception.BadRequestException;
 import com.ssafy.brAIn.roundpostit.entity.RoundPostIt;
 import com.ssafy.brAIn.roundpostit.repository.RoundPostItRepository;
@@ -37,9 +34,6 @@ public class VoteService {
 
 
     private final RedisUtils redisUtils;
-
-    private final ConferenceRoomService conferenceRoomService;
-    private final AIService aiService;
 
 
     // 투표 진행 - 임시 저장
@@ -93,15 +87,10 @@ public class VoteService {
 
 
         // 모든 사용자별 임시 데이터를 실제 키로 이동
-
         List<VoteResponse> tempResults = redisUtils.getSortedSetWithScores(tempVoteKey);
         for (VoteResponse result : tempResults) {
-//                    System.out.println(result.getScore()+","+result.getPostIt());
             redisUtils.incrementSortedSetScore(voteKey, result.getScore(), result.getPostIt());
         }
-
-                // 임시 데이터 삭제
-                //redisUtils.deleteKey(tempVoteKey);
 
 
         redisUtils.incr(voteResultRequest.getConferenceId()+":votes:"+voteResultRequest.getStep()+":total");
@@ -116,8 +105,6 @@ public class VoteService {
     public List<VoteResponse> getVoteResults(Integer conferenceId, String step) {
 
         String key = conferenceId + ":votes:" + step;
-        String tempVotePattern = conferenceId + ":tempVotes:" + step + ":*";
-
 
         while(true){
 
@@ -155,9 +142,6 @@ public class VoteService {
                     });
 
             roundPostIt.selectedNine();
-            //ConferenceRoom cr = conferenceRoomService.findByRoomId(roomId+"");
-            //String persona = aiService.personaMake(voteResponse.getPostIt(), cr.getThreadId(), cr.getAssistantId()).block();
-            //roundPostIt.setPersona(persona);
 
             roundPostItRepository.save(roundPostIt);
 

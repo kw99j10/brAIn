@@ -15,19 +15,6 @@ import java.util.List;
 @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자 추가
 @Getter
 public class ConferenceRoomJoinResponse {
-//        "subject": "회의 주제",
-//                "startTime": "2023-07-19T10:00:00Z",
-//                "inviteCode": "542221",
-//                "threatId": 1,
-//                "hostedId": 2,
-//                "step" : "STEP_1",
-//                "round" : 3,
-
-//    private String subject;
-//    private Date startTime;
-//    private Integer hostedId;
-//    private Step step;
-//    private Integer round;
     private String subject;
     private Date startTime;
     private String inviteCode;

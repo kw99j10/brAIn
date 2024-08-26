@@ -1,7 +1,6 @@
 package com.ssafy.brAIn.ai.service;
 
 import com.ssafy.brAIn.ai.response.AIAssistant;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

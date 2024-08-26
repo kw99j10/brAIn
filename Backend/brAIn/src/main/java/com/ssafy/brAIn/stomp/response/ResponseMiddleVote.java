@@ -2,7 +2,6 @@ package com.ssafy.brAIn.stomp.response;
 
 import com.ssafy.brAIn.stomp.dto.MessageType;
 import com.ssafy.brAIn.vote.dto.VoteResponse;
-import com.ssafy.brAIn.vote.entity.Vote;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

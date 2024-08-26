@@ -6,11 +6,8 @@ import com.ssafy.brAIn.conferenceroom.dto.*;
 import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import com.ssafy.brAIn.conferenceroom.service.ConferenceRoomService;
 import com.ssafy.brAIn.conferenceroom.service.PdfService;
-import com.ssafy.brAIn.history.model.Role;
 import com.ssafy.brAIn.history.model.Status;
 import com.ssafy.brAIn.history.service.MemberHistoryService;
-import com.ssafy.brAIn.member.entity.Member;
-import com.ssafy.brAIn.member.service.MemberService;
 import com.ssafy.brAIn.util.RandomNicknameGenerator;
 import com.ssafy.brAIn.util.RedisUtils;
 import io.jsonwebtoken.Claims;
@@ -21,9 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,7 +27,6 @@ import java.util.Map;
 public class ConferenceRoomController {
 
     private final ConferenceRoomService conferenceRoomService;
-    private final MemberService memberService;
     private final MemberHistoryService memberHistoryService;
 
     @Autowired
@@ -53,7 +47,6 @@ public class ConferenceRoomController {
         ConferenceRoom cr = conferenceRoomRequest.toConferenceRoom();
         ConferenceRoom saveCr = conferenceRoomService.save(cr);
 
-        // redis에 time 저장
         redisUtils.save(saveCr.getId() + ":time:init", conferenceRoomRequest.getTime() + "");
 
         token = token.split(" ")[1];
@@ -65,8 +58,6 @@ public class ConferenceRoomController {
         String randomNick = RandomNicknameGenerator.generateNickname();
 
         String jwtTokenForRoom = jwtUtilForRoom.createJwt("access", email, "CHIEF", randomNick, saveCr.getId() + "", 100000000L);
-//        Member member = memberService.findByEmail(email).orElse(null);
-//        memberHistoryService.createRoom(saveCr, member);
         System.out.println(jwtTokenForRoom);
         ConferenceRoomResponse crr = new ConferenceRoomResponse(cr, jwtTokenForRoom, randomNick);
         System.out.println(crr.toString());

@@ -1,20 +1,14 @@
 package com.ssafy.brAIn.conferenceroom.entity;
 
-import com.ssafy.brAIn.auth.jwt.JwtUtil;
 import com.ssafy.brAIn.history.entity.MemberHistory;
 import com.ssafy.brAIn.util.CommonUtils;
 import com.ssafy.brAIn.util.MeetingUrlGenerator;
 import jakarta.persistence.*;
 
 import lombok.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Entity // 엔티티로 지정
 @Getter

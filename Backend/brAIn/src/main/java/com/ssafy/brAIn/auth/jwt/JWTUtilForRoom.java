@@ -4,7 +4,6 @@ import com.ssafy.brAIn.history.entity.MemberHistory;
 import com.ssafy.brAIn.history.entity.MemberHistoryId;
 import com.ssafy.brAIn.history.model.Role;
 import com.ssafy.brAIn.member.service.MemberService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

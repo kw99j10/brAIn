@@ -9,7 +9,6 @@ import com.ssafy.brAIn.conferenceroom.entity.ConferenceRoom;
 import com.ssafy.brAIn.conferenceroom.entity.Step;
 import com.ssafy.brAIn.conferenceroom.repository.ConferenceRoomRepository;
 import com.ssafy.brAIn.history.dto.ConferenceToMemberResponse;
-import com.ssafy.brAIn.roundboard.repository.RoundBoardRepository;
 import com.ssafy.brAIn.roundpostit.entity.RoundPostIt;
 import com.ssafy.brAIn.roundpostit.repository.RoundPostItRepository;
 import com.ssafy.brAIn.vote.entity.Vote;
@@ -24,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor // final이 붙거나 @NotNull이 붙은 필드의 생성자 추가
@@ -47,8 +44,6 @@ public class ConferenceRoomService {
 
     // 메모리에 회의 요약 결과를 저장할 변수
     private Map<Integer, String> meetingReportCache = new HashMap<>();
-    @Autowired
-    private RoundBoardRepository roundBoardRepository;
     @Autowired
     private RoundPostItRepository roundPostItRepository;
 
@@ -209,10 +204,6 @@ public class ConferenceRoomService {
         List<Vote> voteResults = voteRepository.findByConferenceRoom_Id(roomId);
 
         // Step 2: 투표 결과를 점수 기준으로 상위 3개의 아이디어와 나머지 아이디어로 분리
-//        List<Vote> topThreeIdeas = voteResults.stream()
-//                .sorted((v1, v2) -> v2.getScore() - v1.getScore())
-//                .limit(3)
-//                .toList();
 
         List<Vote> remainingIdeas = voteResults.stream()
                 .sorted((v1, v2) -> v2.getScore() - v1.getScore())
@@ -220,26 +211,11 @@ public class ConferenceRoomService {
                 .toList();
 
         // 모든 아이디어를 하나의 리스트로 결합
-//        List<Vote> allIdeas = new ArrayList<>(topThreeIdeas);
-//        allIdeas.addAll(remainingIdeas);
-
-        // Step 3: 전체 아이디어 내용 수집
-//        String allIdeasContent = allIdeas.stream()
-//                .map(vote -> vote.getRoundPostIt().getContent())
-//                .collect(Collectors.joining("\n"));
-//
-//        List<String> allDetails = allIdeas.stream()
-//                .flatMap(vote -> commentRepository.findByRoundPostIt_Id(vote.getRoundPostIt().getId()).stream().map(Comment::getContent))
-//                .collect(Collectors.toList());
 
         log.info("Thread Id: {}", conferenceRoom.getThreadId());
         log.info("Assistant Id: {}", conferenceRoom.getAssistantId());
 
         // Step 4: 페르소나 및 SWOT 분석 추가 (필요한 경우)
-//        personaMake(remainingIdeas, conferenceRoom.getThreadId(), conferenceRoom.getAssistantId());
-//
-//        String personaResult = aiService.personaMake(allIdeasContent, conferenceRoom.getThreadId(), conferenceRoom.getAssistantId());
-//        String swotResult = aiService.swotMake(allIdeasContent, allDetails, conferenceRoom.getThreadId(), conferenceRoom.getAssistantId());
 
         CompletableFuture<Void> future1 = personaMake(remainingIdeas,conferenceRoom.getThreadId(), conferenceRoom.getAssistantId());
         CompletableFuture<Void> future2 = swotMake(remainingIdeas,conferenceRoom.getThreadId(), conferenceRoom.getAssistantId());
@@ -251,20 +227,8 @@ public class ConferenceRoomService {
         StringBuilder reportBuilder = new StringBuilder();
         reportBuilder.append("Subject: ").append(conferenceRoom.getSubject()).append("\n\n");  // 회의 주제 추가
 
-//        // Step 6: 각 아이디어와 그에 따른 코멘트 추가
-//        reportBuilder.append("Top 3 Ideas:\n\n");
-//        for (Vote vote : topThreeIdeas) {
-//            RoundPostIt postIt = vote.getRoundPostIt();
-//            String ideaContent = postIt.getContent();
-//            List<Comment> participantComments = commentRepository.findByRoundPostIt_Id(postIt.getId());
-//
-//            reportBuilder.append("Idea: ").append(ideaContent).append("\n");
-//            reportBuilder.append("Participant Comments:\n");
-//            for (Comment comment : participantComments) {
-//                reportBuilder.append(" - ").append(comment.getContent()).append("\n");
-//            }
-//            reportBuilder.append("\n"); // 다음 아이디어와의 구분을 위해 빈 줄 추가
-//        }
+        // Step 6: 각 아이디어와 그에 따른 코멘트 추가
+
 
         reportBuilder.append("Other Ideas:\n\n");
         for (Vote vote : remainingIdeas) {

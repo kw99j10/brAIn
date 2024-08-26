@@ -14,14 +14,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -79,11 +77,9 @@ public class WebSecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost", "http://localhost:4173", "https://i11b203.p.ssafy.io")); 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
-//        configuration.setAllowCredentials(true);
 
         configuration.setAllowCredentials(true);
 
-        // WebSocket을 위한 추가 설정
         configuration.addAllowedHeader("Sec-WebSocket-Extensions");
         configuration.addAllowedHeader("Sec-WebSocket-Key");
         configuration.addAllowedHeader("Sec-WebSocket-Version");

@@ -34,7 +34,7 @@ public class PdfService {
                 throw new IOException("Font file not found in classpath");
             }
 
-// 폰트를 메모리에서 읽어들여 BaseFont 생성
+            // 폰트를 메모리에서 읽어들여 BaseFont 생성
             byte[] fontBytes = fontStream.readAllBytes();
             fontStream.close();
 

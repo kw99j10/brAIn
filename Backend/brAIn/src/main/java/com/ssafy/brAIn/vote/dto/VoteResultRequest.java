@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class VoteResultRequest {
     Integer conferenceId;
     String step;
-    //Integer memberId;
 }

@@ -129,7 +129,6 @@ public class KakaoService {
 
     //3. 카카오ID로 회원가입 & 로그인 처리
     private String kakaoUserLogin(HashMap<String, Object> userInfo, HttpServletResponse response){
-// 사용자 정보 가져오기
         String kakaoEmail = userInfo.get("email").toString();
         String nickName = userInfo.get("nickname").toString();
 

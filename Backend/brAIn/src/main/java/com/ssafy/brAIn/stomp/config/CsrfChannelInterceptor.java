@@ -5,14 +5,10 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,9 +26,6 @@ public class CsrfChannelInterceptor implements ChannelInterceptor {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String conferenceToken = accessor.getFirstNativeHeader("AuthorizationRoom");
-
-//        System.out.println("preSend 시작");
-//        System.out.println("conferenceToken: " + conferenceToken);
 
 
         if (conferenceToken != null && conferenceToken.startsWith("Bearer ")) {
@@ -52,17 +45,14 @@ public class CsrfChannelInterceptor implements ChannelInterceptor {
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println("Authentication: " + (authentication != null ? authentication.getAuthorities() : "No Authentication"));
-//
-//        System.out.println("preSend 끝");
+
         return message;
     }
 
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println("PostSend Authentication: " + (authentication != null ? authentication.getAuthorities() : "No Authentication"));
-//        System.out.println("Message: " + message);
+
     }
 
 }
